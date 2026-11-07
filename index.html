@@ -188,7 +188,10 @@ el("speichern").addEventListener("click", () => {
 el("schluesseldatei").addEventListener("click", () => {
   const wahl = document.createElement("input");
   wahl.type = "file";
-  wahl.accept = "application/json";
+  // KEIN accept-Filter. Am Tablet gesehen: Android kennt den Typ der
+  // Datei nicht und blendet sie dann aus - die Datei liegt da und laesst
+  // sich trotzdem nicht auswaehlen. Lieber alles zeigen und hinterher
+  // pruefen, was wirklich drinsteht.
   wahl.addEventListener("change", async () => {
     const datei = wahl.files && wahl.files[0];
     if (!datei) return;
@@ -278,7 +281,10 @@ el("sicherung").addEventListener("click", () => {
 el("zurueckholen").addEventListener("click", () => {
   const wahl = document.createElement("input");
   wahl.type = "file";
-  wahl.accept = "application/json";
+  // KEIN accept-Filter. Am Tablet gesehen: Android kennt den Typ der
+  // Datei nicht und blendet sie dann aus - die Datei liegt da und laesst
+  // sich trotzdem nicht auswaehlen. Lieber alles zeigen und hinterher
+  // pruefen, was wirklich drinsteht.
   wahl.addEventListener("change", async () => {
     const datei = wahl.files && wahl.files[0];
     if (!datei) return;

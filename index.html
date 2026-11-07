@@ -47,6 +47,10 @@
            padding:24px 20px 40px; }
   .decke h1 { font-size:22px; margin:6px 0 4px; }
   .decke p { color:var(--suave); max-width:620px; }
+  #anleitung { max-width:620px; margin:24px 0; padding-left:24px; line-height:1.7;
+               font-size:19px; color:var(--texto); }
+  #anleitung li { margin-bottom:10px; }
+  #anleitung code { background:var(--papel); padding:2px 6px; border-radius:6px; }
   label { display:block; margin:18px 0 6px; font-size:14px; color:var(--suave); }
   input { width:100%; max-width:620px; padding:12px 14px; border-radius:10px;
           border:1px solid var(--borde); background:var(--papel); color:var(--texto);
@@ -76,6 +80,17 @@
   <h1>Einmal einrichten</h1>
   <p>Die zwei Schlüssel bleiben auf diesem Tablet. Sie gehen an niemanden außer
      an Anthropic und Microsoft, und sie stehen in keiner Seite im Netz.</p>
+
+  <!-- Drei Schritte, gross und vorn: wer das Tablet in die Hand nimmt, soll das
+       Labor anmachen koennen, ohne jemanden fragen zu muessen. Die Felder
+       darunter sind nur fuer den Fall, dass die Datei fehlt. -->
+  <ol id="anleitung">
+    <li><b>Schlüssel aus Datei</b> drücken und <code>labor-schluessel.json</code>
+        bei den <b>Downloads</b> aussuchen.</li>
+    <li><b>Speichern</b> drücken. Fertig.</li>
+    <li>Danach die Datei bei den Downloads <b>löschen</b> — darin stehen die
+        Schlüssel im Klartext.</li>
+  </ol>
 
   <label for="k-claude">Anthropic API-Schlüssel (sk-ant-…)</label>
   <input id="k-claude" type="password" autocomplete="off" spellcheck="false">

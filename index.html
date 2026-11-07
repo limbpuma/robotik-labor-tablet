@@ -88,6 +88,7 @@
 
   <div class="reihe">
     <button class="tat" id="speichern">Speichern</button>
+    <button class="tat leise" id="schluesseldatei">Schlüssel aus Datei</button>
     <button class="tat leise" id="sicherung">Projekte sichern</button>
     <button class="tat leise" id="zurueckholen">Projekte einlesen</button>
     <button class="tat leise" id="schliessen" hidden>Schließen</button>
@@ -163,6 +164,40 @@ el("speichern").addEventListener("click", () => {
   schluessel = neu;
   el("decke").hidden = true;
   starten();
+});
+
+// Zwei Schluessel mit dem Finger abzutippen ist kein Einrichten, das ist ein
+// Tippfehler mit Anlauf. Darum: eine kleine Datei auf dem Tablet auswaehlen.
+// Eingelesen wird sie nur, weil jemand sie antippt - die Seite holt sich von
+// sich aus nichts, und was drinsteht, wird vorher angeschaut.
+el("schluesseldatei").addEventListener("click", () => {
+  const wahl = document.createElement("input");
+  wahl.type = "file";
+  wahl.accept = "application/json";
+  wahl.addEventListener("change", async () => {
+    const datei = wahl.files && wahl.files[0];
+    if (!datei) return;
+    try {
+      const gelesen = JSON.parse(await datei.text());
+      const claude = typeof gelesen.claude === "string" ? gelesen.claude.trim() : "";
+      const azure = typeof gelesen.azure === "string" ? gelesen.azure.trim() : "";
+      const region = typeof gelesen.region === "string" ? gelesen.region.trim() : "";
+      if (!claude.startsWith("sk-ant-") || !azure) {
+        el("hinweis").textContent = "In der Datei stehen keine zwei Schlüssel.";
+        return;
+      }
+      el("k-claude").value = claude;
+      el("k-azure").value = azure;
+      el("k-region").value = region || "westeurope";
+      // Nicht selbst speichern: es bleibt eine Entscheidung, die jemand
+      // trifft, indem er auf Speichern drueckt.
+      el("hinweis").textContent = "Eingetragen. Jetzt auf Speichern drücken - "
+        + "und die Datei danach vom Tablet löschen.";
+    } catch (fehler) {
+      el("hinweis").textContent = "Die Datei ließ sich nicht lesen.";
+    }
+  });
+  wahl.click();
 });
 
 el("zahn").addEventListener("click", () => einrichtungZeigen(true));

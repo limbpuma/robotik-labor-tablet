@@ -459,7 +459,12 @@ async function claudeFragen(frage, code) {
       "anthropic-dangerous-direct-browser-access": "true",
     },
     body: JSON.stringify({
-      model: MODELL, max_tokens: 1200, system: HALTUNG, messages: nachrichten,
+      // Gemessen gegen die echte API: die kleinste Antwort MIT Bausteinplan
+      // braucht schon 853 Token. Bei 1200 reicht der erste Plan mit Liste
+      // oder Funktion nicht mehr - und ein abgeschnittener Plan ist kaputtes
+      // JSON, also eine Beschwerde statt Bausteinen. Es ist eine Obergrenze:
+      // was nicht gebraucht wird, kostet nichts.
+      model: MODELL, max_tokens: 2400, system: HALTUNG, messages: nachrichten,
     }),
   });
   if (!antwort.ok) {
@@ -467,6 +472,11 @@ async function claudeFragen(frage, code) {
     throw new Error(`Claude ${antwort.status}: ${roh.slice(0, 160)}`);
   }
   const daten = await antwort.json();
+  if (daten.stop_reason === "max_tokens") {
+    // Mitten im Satz aufgehoert. Das zu verschweigen waere das Schlimmste:
+    // das Kind hoert einen halben Rat und haelt ihn fuer den ganzen.
+    throw new Error("Die Antwort war zu lang und ist abgeschnitten. Frag mich das noch mal in zwei Teilen.");
+  }
   const text = (daten.content || [])
     .filter((teil) => teil.type === "text").map((teil) => teil.text).join(" ");
   verlauf.push(nachrichten[nachrichten.length - 1], { role: "assistant", content: text });
